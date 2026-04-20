@@ -15,6 +15,7 @@ export function App(){
         <div>
             <h1>Welcome to Our Restaurant</h1>
             <p>Serving new dishes</p>
+            <p>{message}</p>
         </div>
     );
 }
