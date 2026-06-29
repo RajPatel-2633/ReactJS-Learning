@@ -1,4 +1,6 @@
-    import React, { useState } from 'react'
+    import React, { useState, useEffect } from 'react'
+    import TaskForm from './TaskForm';
+    import TaskItem from './TaskItem';
 
     function TaskList() {
         const [taskList,setTaskList] = useState([]);
@@ -15,29 +17,54 @@
             setInput("");
         };
 
-        const deleteItem = (index)=>{
-            setTaskList(taskList.filter((item,ind)=> ind!=index))
+        const deleteItem = (id)=>{
+            setTaskList(taskList.filter((item,ind)=> item.id!=id))
         }
+
+        const handleToggle = (id)=>{
+            setTaskList(taskList.map((value,index)=>{
+                if(value.id===id){
+                     const newobj ={
+                        id: value.id,
+                        title: value.title,
+                        completed:!value.completed
+                    } 
+                    return newobj;
+                } else return value;
+            }));
+        }
+
+        useEffect(()=>{
+            const data = localStorage.getItem("tasks")
+            if(data){
+                const arr = JSON.parse(data);
+                setTaskList(arr);
+            }
+
+        },[]);
+
+        useEffect(()=>{
+            const stringTasks = JSON.stringify(taskList)
+            localStorage.setItem("tasks",stringTasks)
+        },[taskList])
 
 
     return (
         <div>
             {taskList.length==0?<p>No tasks as of yet</p>: <p>Please enter the task</p>}
             <h1>Please enter the task</h1>
-            <input type="text" value={input}
-            onChange={(e)=>(setInput(e.target.value))}
-            />
+            <TaskForm
+            input={input} 
+            setInput={setInput}
+            handleSubmit={handleSubmit}/>
 
-            <button onClick={handleSubmit}>Add Task</button>
             <ul>
-                {taskList.map((value,index)=> (
-                    <li key={index}>{value.title}  <button onClick={()=> deleteItem(index)}>Delete Me</button></li>
-            
+            {taskList.map((task,index)=> (
+                      <TaskItem task={task} index={index} deleteItem={deleteItem}  handleToggle={handleToggle}/>
                 )
                 )}
             </ul>
-            
-            
+           
         </div>
     )
     }

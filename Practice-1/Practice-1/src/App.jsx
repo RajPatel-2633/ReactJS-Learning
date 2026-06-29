@@ -13,9 +13,9 @@ function App() {
     <h1>Welcome to App</h1>
     {/* <Navbar title={title} />
     <button onClick={()=>(setTitle("React Master"))}>Change Title</button>
-    <Navbar title="Task Manager" />
-    <TaskList/> */}
-    <Todo/>
+    <Navbar title="Task Manager" /> */}
+    <TaskList/>
+    {/* <Todo/> */}
 
     </>
   )

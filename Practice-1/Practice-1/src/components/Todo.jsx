@@ -24,7 +24,7 @@ function Todo(){
         <button onClick={handleClick}>Add Task</button>
         <ul>
             {taskList.map((value,index)=>(
-                <li key={index}> {value} <button onClick={()=> deleteItem(index)}>Delete Task</button></li>
+                <li key={index}> <input type="checkbox" onClick={()=> handleClick(index)}/> {value} <button onClick={()=> deleteItem(index)}>Delete Task</button></li>
             ))}
         </ul>
 
