@@ -3,8 +3,18 @@
     import TaskItem from './TaskItem';
 
     function TaskList() {
-        const [taskList,setTaskList] = useState([]);
+        const [taskList,setTaskList] = useState(()=>{
+            const data = localStorage.getItem("tasks")
+            if(data){
+                const arr = JSON.parse(data);
+                return arr;
+            }
+
+            return [];
+        });
         const [input,setInput]  = useState("");
+        const [loading,setLoading] = useState(false);
+        const [error,setError] = useState(null);
 
         const handleSubmit = ()=>{
             const newTask = {
@@ -35,23 +45,39 @@
         }
 
         useEffect(()=>{
-            const data = localStorage.getItem("tasks")
-            if(data){
-                const arr = JSON.parse(data);
-                setTaskList(arr);
-            }
-
-        },[]);
-
-        useEffect(()=>{
             const stringTasks = JSON.stringify(taskList)
             localStorage.setItem("tasks",stringTasks)
         },[taskList])
+
+        useEffect(()=>{
+
+            async function fetchTasks(){
+                try{
+                    setLoading(true)
+                    const response = await fetch('https://jsonplaceholder.typicode.com/todos');
+                    const data = await response.json()
+                    
+                    setTaskList(data);
+                } catch(e){
+                    setError(e);
+                } finally{
+                    setLoading(false)
+                }
+               
+            }
+
+            fetchTasks();
+            // fetch('https://jsonplaceholder.typicode.com/todos')
+            // .then((data)=>data.json())
+            // .then((result)=> setTaskList(result))   
+        },[])
 
 
     return (
         <div>
             {taskList.length==0?<p>No tasks as of yet</p>: <p>Please enter the task</p>}
+            {loading?<h1>Loading Tasks...</h1>:<></>}
+            {error?<h1>{error}</h1>:<></>}
             <h1>Please enter the task</h1>
             <TaskForm
             input={input} 
